@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-const { authSocket, socketServer } = require("./socketServer");
+
 const posts = require("./routes/posts");
 const users = require("./routes/users");
 const comments = require("./routes/comments");
@@ -14,14 +14,7 @@ const comments = require("./routes/comments");
 dotenv.config();
 
 const httpServer = require("http").createServer(app);
-const io = require("socket.io")(httpServer, {
-  cors: {
-    origin: ["http://localhost:3000", "https://post-it-heroku.herokuapp.com"],
-  },
-});
 
-io.use(authSocket);
-io.on("connection", (socket) => socketServer(socket));
 
 mongoose.connect(
   process.env.MONGO_URI,
@@ -43,10 +36,4 @@ app.use("/api/users", users);
 app.use("/api/comments", comments);
 
 
-if (process.env.NODE_ENV == "production") {
-  app.use(express.static(path.join(__dirname, "/client/build")));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
-  });
-}
