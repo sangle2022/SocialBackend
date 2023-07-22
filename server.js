@@ -28,7 +28,9 @@ mongoose.connect(
 httpServer.listen(process.env.PORT || 4000, () => {
   console.log("Listening");
 });
-
+app.get('/',(req,res)=>{
+  res.send("welcome")
+})
 app.use(express.json());
 app.use(cors());
 app.use("/api/posts", posts);
